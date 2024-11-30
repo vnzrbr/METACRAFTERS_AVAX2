@@ -7,6 +7,7 @@ export default function HomePage() {
   const [account, setAccount] = useState(undefined);
   const [atm, setATM] = useState(undefined);
   const [balance, setBalance] = useState(undefined);
+  const [trees, setTrees] = useState(undefined);
 
   const contractAddress = "0x5FbDB2315678afecb367f032d93F642f64180aa3";
   const atmABI = atm_abi.abi;
@@ -59,6 +60,12 @@ export default function HomePage() {
     }
   }
 
+  const getTrees = async() => {
+    if (atm) {
+      setTrees((await atm.getTrees()).toNumber());
+    }
+  }
+
   const deposit = async() => {
     if (atm) {
       let tx = await atm.deposit(1);
@@ -71,6 +78,23 @@ export default function HomePage() {
     if (atm) {
       let tx = await atm.withdraw(1);
       await tx.wait()
+      getBalance();
+    }
+  }
+
+  const plant = async() => {
+    if (atm) {
+      let tx = await atm.plant(1);
+      await tx.wait()
+      getTrees();
+      getBalance();
+    }
+  }
+  const harvestWood = async() => {
+    if (atm) {
+      let tx = await atm.harvestWood(1);
+      await tx.wait()
+      getTrees();
       getBalance();
     }
   }
@@ -90,12 +114,23 @@ export default function HomePage() {
       getBalance();
     }
 
+    if (trees == undefined) {
+      getTrees();
+    }
+
     return (
       <div>
         <p>Your Account: {account}</p>
         <p>Your Balance: {balance}</p>
+        <p>Trees Planted: {trees}</p>
         <button onClick={deposit}>Deposit 1 ETH</button>
         <button onClick={withdraw}>Withdraw 1 ETH</button>
+        <br></br>
+        <br></br>
+        <button onClick={plant}>Plant Trees</button>
+        <br></br>
+        <br></br>
+        <button onClick={harvestWood}>Cut Trees for Profit!</button>
       </div>
     )
   }
@@ -104,7 +139,7 @@ export default function HomePage() {
 
   return (
     <main className="container">
-      <header><h1>Welcome to the Metacrafters ATM!</h1></header>
+      <header><h1>Welcome to the Environmental ATM!</h1></header>
       {initUser()}
       <style jsx>{`
         .container {

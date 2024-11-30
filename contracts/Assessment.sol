@@ -6,17 +6,24 @@ pragma solidity ^0.8.9;
 contract Assessment {
     address payable public owner;
     uint256 public balance;
+    uint256 public trees;
 
     event Deposit(uint256 amount);
     event Withdraw(uint256 amount);
+    event Plant(uint256 amount);
+    event Harvest(uint256 amount);
 
-    constructor(uint initBalance) payable {
+    constructor(uint initBalance, uint initTrees) payable {
         owner = payable(msg.sender);
         balance = initBalance;
+        trees = initTrees;
     }
 
     function getBalance() public view returns(uint256){
         return balance;
+    }
+    function getTrees() public view returns(uint256){
+        return trees;
     }
 
     function deposit(uint256 _amount) public payable {
@@ -56,5 +63,33 @@ contract Assessment {
 
         // emit the event
         emit Withdraw(_withdrawAmount);
+    }
+
+    function plant(uint256 _funds) public payable{
+        require(msg.sender == owner, "You are not the owner of this account");
+        uint _previousBalance = balance;
+        if (balance < _funds) {
+            revert InsufficientBalance({
+                balance: balance,
+                withdrawAmount: _funds
+            });
+        }
+
+        balance -= _funds;
+        trees += (_funds*10);
+        assert(balance == (_previousBalance - _funds));
+
+        emit Plant(_funds);
+    }
+
+    function harvestWood(uint _fund) public payable{
+        require(msg.sender == owner, "You are not the owner of this account");
+        uint _previousBalance = balance;
+        
+        trees -= (_fund * 5);
+        balance += _fund;
+        assert(balance == (_previousBalance + _fund));
+
+        emit Harvest(_fund);
     }
 }

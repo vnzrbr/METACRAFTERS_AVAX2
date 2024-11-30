@@ -1,4 +1,10 @@
-# Starter Next/Hardhat Project
+# Hardhat Project - Tree Planter and Harvester
+
+## Description
+
+This is a project for the Smart Contract Management from the ETH-AVAX 2nd Module. In this project we simulate the planting of trees and the costs required to do this action. We also showcase a function which cuts these trees to get back the amount we used to plant said trees, and then some. 
+
+## How to Run
 
 After cloning the github, you will want to do the following to get the code running on your computer.
 
