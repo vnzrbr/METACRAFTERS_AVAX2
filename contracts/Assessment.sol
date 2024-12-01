@@ -12,6 +12,7 @@ contract Assessment {
     event Withdraw(uint256 amount);
     event Plant(uint256 amount);
     event Harvest(uint256 amount);
+    event EverythingBurned(uint256 timestamp, string message);
 
     constructor(uint initBalance, uint initTrees) payable {
         owner = payable(msg.sender);
@@ -92,4 +93,17 @@ contract Assessment {
 
         emit Harvest(_fund);
     }
+
+    function burnEverything() public {
+        require(msg.sender == owner, "You are not the owner of this account");
+        require(balance > 0 || trees > 0, "Nothing to burn");
+
+        uint256 burnedBalance = balance;
+        balance = 0;
+        trees = 0;
+        assert(balance == 0 && trees == 0);
+        // Emit event to indicate all resources were burned
+        emit EverythingBurned(block.timestamp, "All balance and trees have been destroyed!");
+    }
+  
 }
